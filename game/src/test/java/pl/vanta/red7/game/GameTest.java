@@ -20,7 +20,7 @@ class GameTest {
         assertFalse(game.isFinished());
         assertEquals(HIGHEST_CARD, game.getCurrentRule());
         assertEquals(3, game.getPlayers().size());
-        assertEquals(49 - 3 * 7 - 3, game.getDeck().remainingCards());
+        assertEquals(Deck.MAX_CARDS - 3 * 7 - 3, game.getDeck().remainingCards());
 
         for (Player p : game.getPlayers()) {
             assertEquals(7, p.getHand().size());

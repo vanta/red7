@@ -10,6 +10,7 @@ import static java.util.stream.Collectors.toSet;
 import static java.util.stream.IntStream.range;
 
 public class Deck {
+    public static final int MAX_CARDS = 49;
     private final Random random = new Random();
     private final List<Card> cards = new ArrayList<>(EnumSet.allOf(Card.class));
 
