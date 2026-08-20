@@ -1,0 +1,11 @@
+package pl.vanta.red7.game;
+
+public enum Rule {
+    HIGHEST_CARD,
+    MOST_CARDS_OF_ONE_NUMBER,
+    MOST_CARDS_OF_ONE_COLOR,
+    MOST_EVEN_CARDS,
+    MOST_CARDS_OF_DIFFERENT_COLORS,
+    MOST_CONSECUTIVE_CARDS,
+    MOST_CARDS_UNDER_4
+}
