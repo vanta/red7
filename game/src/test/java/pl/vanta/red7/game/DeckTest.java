@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static pl.vanta.red7.game.Deck.*;
 
 class DeckTest {
 
@@ -51,12 +52,25 @@ class DeckTest {
         Set<Card> takenCards = new HashSet<>();
 
         //when 1 card 49 times to get all cards
-        for (int i = 0; i < 49; i++) {
+        for (int i = 0; i < MAX_CARDS; i++) {
             takenCards.addAll(deck.take(1));
         }
 
         //then
-        assertEquals(49, takenCards.size());
+        assertEquals(MAX_CARDS, takenCards.size());
         assertEquals(0, deck.remainingCards());
+    }
+
+    @Test
+    void shouldPutBackCards() {
+        //given
+        Deck deck = new Deck();
+        Set<Card> takenCards = deck.take(5);
+
+        //when
+        deck.putBack(takenCards);
+
+        //then
+        assertEquals(MAX_CARDS, deck.remainingCards());
     }
 }

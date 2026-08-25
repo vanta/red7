@@ -1,5 +1,6 @@
 package pl.vanta.red7.game;
 
+import static java.util.Comparator.comparingInt;
 import static pl.vanta.red7.game.Color.BLUE;
 import static pl.vanta.red7.game.Color.GREEN;
 import static pl.vanta.red7.game.Color.INDIGO;
@@ -73,10 +74,11 @@ public enum Card {
         this.color = color;
     }
 
-    boolean isBetterThan(Card other) {
-        if (this.value == other.value) {
-            return this.color.getOrder() > other.color.getOrder();
-        }
-        return this.value > other.value;
+    public boolean isBetterThan(Card other) {
+        return comparingInt(Card::getValue).compare(this, other) > 0;
+    }
+
+    public int getValue() {
+        return 10 * value + color.getOrder();
     }
 }

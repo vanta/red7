@@ -25,6 +25,10 @@ public class Deck {
                 .collect(toSet());
     }
 
+    public void putBack(Set<Card> returnedCards) {
+        cards.addAll(returnedCards);
+    }
+
     public int remainingCards() {
         return cards.size();
     }
