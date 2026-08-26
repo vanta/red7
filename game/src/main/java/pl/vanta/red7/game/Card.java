@@ -81,4 +81,8 @@ public enum Card {
     public int getValue() {
         return 10 * value + color.getOrder();
     }
+
+    public Rule getRule() {
+        return color.getRule();
+    }
 }

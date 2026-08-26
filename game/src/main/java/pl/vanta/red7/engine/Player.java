@@ -6,17 +6,30 @@ import java.util.Set;
 import pl.vanta.red7.game.Card;
 
 public final class Player implements PlayerView {
-    private final GameState gameState;
     private final String name;
-    private final Set<Card> hand;
-    private final Set<Card> table;
+    private final Set<Card> hand = new HashSet<>();
+    private final Set<Card> table = new HashSet<>();
+    private final Set<Card> wonCards = new HashSet<>();
 
-    public Player(GameState gameState, String name, Set<Card> hand, Card initialCard) {
+    private GameState gameState;
+
+    public Player(String name) {
         this.name = name;
-        this.hand = hand;
+    }
+
+    public void init(GameState gameState, Set<Card> hand, Card initialCard) {
         this.gameState = gameState;
-        this.table = new HashSet<>();
+        this.hand.clear();
+        this.table.clear();
+
+        this.hand.addAll(hand);
         this.table.add(initialCard);
+        
+        IO.println(name + ": I have been dealt " + hand + " and my initial card is " + initialCard);
+    }
+
+    public void takeCards(Set<Card> cards) {
+        this.wonCards.addAll(cards);
     }
 
     @Override
@@ -32,5 +45,14 @@ public final class Player implements PlayerView {
     @Override
     public Set<Card> getTable() {
         return table;
+    }
+
+    public void play() {
+        gameState.pass(this);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
