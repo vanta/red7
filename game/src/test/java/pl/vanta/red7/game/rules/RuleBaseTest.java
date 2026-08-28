@@ -26,4 +26,11 @@ abstract class RuleBaseTest {
     static Card I7 = new Card(7, INDIGO);
     static Card V7 = new Card(7, VIOLET);
 
+    static Card O1 = new Card(1, ORANGE);
+    static Card O2 = new Card(2, ORANGE);
+
+    static Card Y1 = new Card(1, YELLOW);
+    static Card Y2 = new Card(2, YELLOW);
+    static Card Y3 = new Card(3, YELLOW);
+
 }
