@@ -24,7 +24,7 @@ public final class Player implements PlayerView {
 
         this.hand.addAll(hand);
         this.table.add(initialCard);
-        
+
         IO.println(name + ": I have been dealt " + hand + " and my initial card is " + initialCard);
     }
 
@@ -53,6 +53,10 @@ public final class Player implements PlayerView {
 
     @Override
     public String toString() {
-        return name;
+        return name + " (" + getPoints() + " points)";
+    }
+
+    public int getPoints() {
+        return wonCards.stream().mapToInt(Card::value).sum();
     }
 }

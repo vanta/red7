@@ -8,6 +8,7 @@ import java.util.Set;
 import pl.vanta.red7.game.Card;
 import pl.vanta.red7.game.Deck;
 import pl.vanta.red7.game.Rule;
+import pl.vanta.red7.game.rules.HighestCardRule;
 
 import static java.util.function.Predicate.not;
 import static java.util.stream.Stream.generate;
@@ -37,7 +38,7 @@ public class Game implements GameState {
 
     @Override
     public Rule getCurrentRule() {
-        return rules.isEmpty() ? Rule.HIGHEST_CARD : rules.getLast().getRule();
+        return rules.isEmpty() ? new HighestCardRule() : rules.getLast().color().getRule();
     }
 
     @Override

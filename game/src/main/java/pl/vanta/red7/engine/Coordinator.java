@@ -6,6 +6,8 @@ import java.util.List;
 
 import pl.vanta.red7.game.Deck;
 
+import static java.util.Comparator.comparingInt;
+
 public class Coordinator {
 
     public void startGame(String... playerNames) {
@@ -26,6 +28,9 @@ public class Coordinator {
             deck.putBack(game.getRemainingCards());
         }
 
+        players.stream()
+                .sorted(comparingInt(Player::getPoints))
+                .forEach(IO::println);
     }
 
     private static boolean thereAreEnoughCards(Deck deck, List<Player> players) {

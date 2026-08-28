@@ -1,21 +1,23 @@
 package pl.vanta.red7.game;
 
-import static pl.vanta.red7.game.Rule.HIGHEST_CARD;
-import static pl.vanta.red7.game.Rule.MOST_CARDS_OF_DIFFERENT_COLORS;
-import static pl.vanta.red7.game.Rule.MOST_CARDS_OF_ONE_COLOR;
-import static pl.vanta.red7.game.Rule.MOST_CARDS_OF_ONE_NUMBER;
-import static pl.vanta.red7.game.Rule.MOST_CARDS_UNDER_4;
-import static pl.vanta.red7.game.Rule.MOST_CONSECUTIVE_CARDS;
-import static pl.vanta.red7.game.Rule.MOST_EVEN_CARDS;
+import java.util.Comparator;
+
+import pl.vanta.red7.game.rules.ConsecutiveNumbersRule;
+import pl.vanta.red7.game.rules.DifferentColorsRule;
+import pl.vanta.red7.game.rules.EvenCardsRule;
+import pl.vanta.red7.game.rules.HighestCardRule;
+import pl.vanta.red7.game.rules.NumbersUnder4Rule;
+import pl.vanta.red7.game.rules.SameColorRule;
+import pl.vanta.red7.game.rules.SameNumberRule;
 
 public enum Color {
-    RED(7, HIGHEST_CARD),
-    ORANGE(6, MOST_CARDS_OF_ONE_NUMBER),
-    YELLOW(5, MOST_CARDS_OF_ONE_COLOR),
-    GREEN(4, MOST_EVEN_CARDS),
-    BLUE(3, MOST_CARDS_OF_DIFFERENT_COLORS),
-    INDIGO(2, MOST_CONSECUTIVE_CARDS),
-    VIOLET(1, MOST_CARDS_UNDER_4);
+    RED(7, new HighestCardRule()),
+    ORANGE(6, new SameNumberRule()),
+    YELLOW(5, new SameColorRule()),
+    GREEN(4, new EvenCardsRule()),
+    BLUE(3, new DifferentColorsRule()),
+    INDIGO(2, new ConsecutiveNumbersRule()),
+    VIOLET(1, new NumbersUnder4Rule());
 
     private final int order;
     private final Rule rule;
@@ -31,5 +33,9 @@ public enum Color {
 
     public Rule getRule() {
         return rule;
+    }
+
+    public static Comparator<Color> getComparator() {
+        return Comparator.comparingInt(Color::getOrder);
     }
 }
