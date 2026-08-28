@@ -1,5 +1,5 @@
 [versions]
-jcolors = "6.0.1"
+jcolors = "5.5.1"
 
 [libraries]
-jcolors = { module = "com.diogonunes:jcolors", version.ref = "jcolors" }
+jcolors = { module = "com.diogonunes:JColor", version.ref = "jcolors" }
