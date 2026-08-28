@@ -21,7 +21,7 @@ public class SameColorRule implements Rule {
         return cards.stream()
                 .collect(groupingBy(Card::color, toSet()))
                 .values().stream()
-                .max(comparingInt(Set<Card>::size).thenComparing(group -> group.stream().max(Card::compareTo).orElseThrow()))
+                .max(comparingInt(Set<Card>::size).thenComparing(highestCardComparator()))
                 .orElse(Set.of());
     }
 }
