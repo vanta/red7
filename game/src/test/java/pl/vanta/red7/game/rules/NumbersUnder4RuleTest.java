@@ -3,14 +3,13 @@ package pl.vanta.red7.game.rules;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import pl.vanta.red7.game.Card;
 import pl.vanta.red7.game.Rule;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
 class NumbersUnder4RuleTest extends RuleBaseTest {
@@ -25,7 +24,8 @@ class NumbersUnder4RuleTest extends RuleBaseTest {
                 of("single card", Set.of(R3), Set.of(R3)),
                 of("low cards only", Set.of(R1, R2, R3), Set.of(R3, R2, R1))
         );
-    }    
+    }
+
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCases")
     void shouldReturnCardsUnder4(String description, Set<Card> input, Set<Card> expected) {
