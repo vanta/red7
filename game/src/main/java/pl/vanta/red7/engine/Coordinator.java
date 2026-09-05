@@ -7,6 +7,7 @@ import java.util.List;
 import pl.vanta.red7.game.Deck;
 
 import static java.util.Comparator.comparingInt;
+import static pl.vanta.red7.engine.Game.CARDS_PER_PLAYER;
 
 public class Coordinator {
 
@@ -17,15 +18,19 @@ public class Coordinator {
 
         var deck = new Deck();
 
-        while (thereAreEnoughCards(deck, players)) {
-            var game = new Game(players, deck);
+        while (thereAreEnoughCardsToPlay(deck, players)) {
+            var game = new Game(players);
+
+            players.forEach(
+                    player -> player.init(game, deck.take(CARDS_PER_PLAYER - 1), deck.take(1).iterator().next())
+            );
 
             var winner = game.start();
             IO.println("The winner is: " + winner.getName());
 
-            //take th winning cards
-            winner.takeCards(game.getWinningCards());
-            deck.putBack(game.getRemainingCards());
+            //take the winning cards
+            winner.takeCards(game.getWinningCards(winner));
+            deck.putBack(game.getRemainingCards(winner));
         }
 
         players.stream()
@@ -33,8 +38,8 @@ public class Coordinator {
                 .forEach(IO::println);
     }
 
-    private static boolean thereAreEnoughCards(Deck deck, List<Player> players) {
-        return deck.remainingCards() >= players.size() * Game.CARDS_PER_PLAYER;
+    private static boolean thereAreEnoughCardsToPlay(Deck deck, List<Player> players) {
+        return deck.remainingCards() >= players.size() * CARDS_PER_PLAYER;
     }
 
 }
