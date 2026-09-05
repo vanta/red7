@@ -7,6 +7,7 @@ import java.util.Set;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.generate;
 import static java.util.stream.IntStream.range;
 
 public class Deck {
@@ -19,9 +20,8 @@ public class Deck {
             throw new IllegalArgumentException("Not enough cards in the deck");
         }
 
-        return range(0, count)
-                .map(i -> random.nextInt(cards.size()))
-                .mapToObj(cards::remove)
+        return generate(() -> cards.remove(random.nextInt(cards.size())))
+                .limit(count)
                 .collect(toSet());
     }
 
