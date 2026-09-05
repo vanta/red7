@@ -13,11 +13,11 @@ public final class Player implements PlayerView {
 
     private GameState gameState;
 
-    public Player(String name) {
+    Player(String name) {
         this.name = name;
     }
 
-    public void init(GameState gameState, Set<Card> hand, Card initialCard) {
+    void init(GameState gameState, Set<Card> hand, Card initialCard) {
         this.gameState = gameState;
         this.hand.clear();
         this.table.clear();
@@ -28,10 +28,18 @@ public final class Player implements PlayerView {
         IO.println(name + ": I have been dealt " + hand + " and my initial card is " + initialCard);
     }
 
-    public void takeCards(Set<Card> cards) {
+    void takeCards(Set<Card> cards) {
         this.wonCards.addAll(cards);
     }
 
+    void putOnTable(Card card) {
+        if (!hand.contains(card)) {
+            throw new IllegalArgumentException("Player " + name + " does not have card " + card);
+        }
+        hand.remove(card);
+        table.add(card);
+    }
+    
     @Override
     public String getName() {
         return name;
@@ -44,10 +52,10 @@ public final class Player implements PlayerView {
 
     @Override
     public Set<Card> getTable() {
-        return table;
+        return Set.copyOf(table);
     }
 
-    public void play() {
+    void play() {
         gameState.pass(this);
     }
 
@@ -56,7 +64,7 @@ public final class Player implements PlayerView {
         return name + " (" + getPoints() + " points)";
     }
 
-    public int getPoints() {
+    int getPoints() {
         return wonCards.stream().mapToInt(Card::value).sum();
     }
 }

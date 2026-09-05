@@ -55,14 +55,14 @@ class Game implements GameState {
         checkTurn(player);
 
         rules.add(cardRule);
-        player.getTable().add(cardOnTable);
+        player.putOnTable(cardOnTable);
     }
 
     @Override
     public void putCardOnTable(Player player, Card cardOnTable) {
         checkTurn(player);
 
-        player.getTable().add(cardOnTable);
+        player.putOnTable(cardOnTable);
     }
 
     @Override
@@ -110,7 +110,7 @@ class Game implements GameState {
     }
 
     private boolean isWinning(Player player) {
-        return false;
+        return player == getWinner();
     }
 
     private Player getWinner() {
