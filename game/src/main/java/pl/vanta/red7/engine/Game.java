@@ -76,7 +76,7 @@ class Game implements GameState {
         }
     }
 
-    public Player start() {
+    Player start() {
         var playersIterator = generate(() -> players)
                 .flatMap(List::stream)
                 .iterator();
