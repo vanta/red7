@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import pl.vanta.red7.game.Card;
 import pl.vanta.red7.game.Rule;
@@ -14,10 +13,11 @@ import pl.vanta.red7.game.rules.HighestCardRule;
 import static java.util.Comparator.comparingInt;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.generate;
 
 class Game implements GameState {
-    public static final int CARDS_PER_PLAYER = 8;
+    static final int CARDS_PER_PLAYER = 8;
     private static final int MIN_NUMBER_OF_PLAYERS = 2;
     private static final HighestCardRule HIGHEST_CARD_RULE = new HighestCardRule();
 
@@ -90,7 +90,7 @@ class Game implements GameState {
                 continue;
             }
 
-            currentPlayer.play();
+            currentPlayer.play(this);
 
             //if the current player passed, stop
             if (passedPlayers.contains(currentPlayer)) {
@@ -98,7 +98,7 @@ class Game implements GameState {
             }
 
             //check if the current player is winning
-            if (!isWinning(currentPlayer)) {
+            if (getWinner() != currentPlayer) {
                 passedPlayers.add(currentPlayer);
             }
         }
@@ -109,11 +109,7 @@ class Game implements GameState {
                 .orElseThrow(() -> new IllegalStateException("No player left to win the game"));
     }
 
-    private boolean isWinning(Player player) {
-        return player == getWinner();
-    }
-
-    private Player getWinner() {
+    Player getWinner() {
         return players.stream()
                 .filter(not(passedPlayers::contains))
                 .max(playerComparator())
@@ -129,7 +125,7 @@ class Game implements GameState {
                 .thenComparing(getCurrentRule().highestCardComparator());
     }
 
-    Set<Card> getWinningCards(Player player) {
+    Set<Card> getCardsForRule(Player player) {
         return getCurrentRule().getCardsForRule(player.getTable());
     }
 
@@ -139,12 +135,12 @@ class Game implements GameState {
                 .flatMap(p -> p.getTable().stream())
                 .collect(toSet());
 
-        var winnerCards = getWinningCards(winner);
+        var winnerCards = getCardsForRule(winner);
         var winnerRemainingCards = winner.getTable().stream()
                 .filter(not(winnerCards::contains))
                 .collect(toSet());
 
-        return Stream.concat(losersCards.stream(), winnerRemainingCards.stream())
+        return concat(losersCards.stream(), winnerRemainingCards.stream())
                 .collect(toSet());
     }
 }

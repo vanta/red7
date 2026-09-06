@@ -19,17 +19,16 @@ public class Coordinator {
         var deck = new Deck();
 
         while (thereAreEnoughCardsToPlay(deck, players)) {
-            var game = new Game(players);
-
             players.forEach(
-                    player -> player.init(game, deck.take(CARDS_PER_PLAYER - 1), deck.take(1).iterator().next())
+                    player -> player.init(deck.take(CARDS_PER_PLAYER - 1), deck.take(1).iterator().next())
             );
 
+            var game = new Game(players);
             var winner = game.start();
             IO.println("The winner is: " + winner.getName());
 
             //take the winning cards
-            winner.takeCards(game.getWinningCards(winner));
+            winner.takeCards(game.getCardsForRule(winner));
             deck.putBack(game.getRemainingCards(winner));
         }
 

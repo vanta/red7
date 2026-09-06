@@ -11,14 +11,11 @@ public final class Player implements PlayerView {
     private final Set<Card> table = new HashSet<>();
     private final Set<Card> wonCards = new HashSet<>();
 
-    private GameState gameState;
-
     Player(String name) {
         this.name = name;
     }
 
-    void init(GameState gameState, Set<Card> hand, Card initialCard) {
-        this.gameState = gameState;
+    void init(Set<Card> hand, Card initialCard) {
         this.hand.clear();
         this.table.clear();
 
@@ -55,7 +52,7 @@ public final class Player implements PlayerView {
         return Set.copyOf(table);
     }
 
-    void play() {
+    void play(GameState gameState) {
         gameState.pass(this);
     }
 
