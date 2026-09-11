@@ -5,6 +5,9 @@ import java.util.Set;
 
 import pl.vanta.red7.game.Card;
 
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notBlank;
+
 public final class Player implements PlayerView {
     private final String name;
     private final Set<Card> hand = new HashSet<>();
@@ -12,13 +15,13 @@ public final class Player implements PlayerView {
     private final Set<Card> wonCards = new HashSet<>();
 
     Player(String name) {
-        this.name = name;
+        this.name = notBlank(name, "name cannot be empty");
     }
 
     void init(Set<Card> hand, Card initialCard) {
-        assert hand.size() == Game.CARDS_PER_PLAYER - 1 : "Player " + name + " should be dealt " + (Game.CARDS_PER_PLAYER - 1) + " cards, but got " + hand.size();
-        assert !hand.contains(initialCard) : "Player " + name + " should not have initial card " + initialCard + " in hand";
-        
+        isTrue(hand.size() == Game.CARDS_PER_PLAYER - 1, "Player %s should be dealt %d cards, but got %d", name, Game.CARDS_PER_PLAYER - 1, hand.size());
+        isTrue(!hand.contains(initialCard), "Player %s should not have initial card %s in hand", name, initialCard);
+
         this.hand.clear();
         this.table.clear();
 
@@ -39,7 +42,7 @@ public final class Player implements PlayerView {
         hand.remove(card);
         table.add(card);
     }
-    
+
     @Override
     public String getName() {
         return name;

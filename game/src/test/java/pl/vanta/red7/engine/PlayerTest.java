@@ -31,7 +31,7 @@ class PlayerTest extends BaseTest {
         //given
 
         //when
-        var exception = assertThrows(AssertionError.class, () -> PLAYER_ALICE.init(hand, R7));
+        var exception = assertThrows(IllegalArgumentException.class, () -> PLAYER_ALICE.init(hand, R7));
 
         //then
         assertEquals("Player Alice should be dealt 7 cards, but got " + hand.size(), exception.getMessage());
@@ -44,10 +44,26 @@ class PlayerTest extends BaseTest {
         var tableCard = R7;
 
         //when
-        var exception = assertThrows(AssertionError.class, () -> PLAYER_ALICE.init(hand, tableCard));
+        var exception = assertThrows(IllegalArgumentException.class, () -> PLAYER_ALICE.init(hand, tableCard));
 
         //then
         assertEquals("Player Alice should not have initial card " + tableCard + " in hand", exception.getMessage());
+    }
+
+    static Stream<Arguments> invalidNames() {
+        return Stream.of(
+                of("null", null, NullPointerException.class),
+                of("empty", "", IllegalArgumentException.class),
+                of("blank", "   ", IllegalArgumentException.class)
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("invalidNames")
+    void shouldCannotCreatePlayerWithInvalidName(String description, String name, Class<? extends RuntimeException> expectedException) {
+        var exception = assertThrows(expectedException, () -> new Player(name));
+
+        assertEquals("name cannot be empty", exception.getMessage());
     }
 
 }

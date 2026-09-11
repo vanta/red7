@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     api project(':model')
-    
+
     implementation libs.jcolors
+    implementation libs.commonsLang3
 }

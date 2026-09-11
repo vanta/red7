@@ -1,5 +1,7 @@
 [versions]
 jcolors = "5.5.1"
+commonsLang3 = "3.17.0"
 
 [libraries]
 jcolors = { module = "com.diogonunes:JColor", version.ref = "jcolors" }
+commonsLang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
