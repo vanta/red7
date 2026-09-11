@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import pl.vanta.red7.game.Card;
 import pl.vanta.red7.game.Rule;
@@ -13,7 +14,6 @@ import pl.vanta.red7.game.rules.HighestCardRule;
 import static java.util.Comparator.comparingInt;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.generate;
 
 class Game implements GameState {
@@ -43,34 +43,6 @@ class Game implements GameState {
         return List.copyOf(players);
     }
 
-//    @Override
-//    public void changeRule(Player player, Card cardRule) {
-//        checkTurn(player);
-//
-//        rules.add(cardRule);
-//    }
-//
-//    @Override
-//    public void changeRuleAndPutCardOnTable(Player player, Card cardRule, Card cardOnTable) {
-//        checkTurn(player);
-//
-//        rules.add(cardRule);
-//        player.putOnTable(cardOnTable);
-//    }
-//
-//    @Override
-//    public void putCardOnTable(Player player, Card cardOnTable) {
-//        checkTurn(player);
-//
-//        player.putOnTable(cardOnTable);
-//    }
-
-    private void checkTurn(Player player) {
-        if (player != currentPlayer) {
-            throw new IllegalStateException("It's not " + player.getName() + "'s turn");
-        }
-    }
-
     Player start() {
         var playersIterator = generate(() -> players)
                 .flatMap(List::stream)
@@ -86,21 +58,18 @@ class Game implements GameState {
             }
 
             switch (currentPlayer.play(this)) {
-                case PassMove _ -> passedPlayers.add(currentPlayer);
-                case ChangeRuleMove changeRuleMove -> rules.add(changeRuleMove.changeRuleCard());
-                case PutOnTableMove putOnTableMove -> currentPlayer.putOnTable(putOnTableMove.tableCard());
-                case ChangeRuleAndPutOnTableMove changeRuleAndPutCardOnTableMove -> {
-                    rules.add(changeRuleAndPutCardOnTableMove.changeRuleCard());
-                    currentPlayer.putOnTable(changeRuleAndPutCardOnTableMove.tableCard());
-                }
-                case null, default -> {
-                    throw new IllegalStateException();
-                }
+                case PassMove _ -> pass();
+                case ChangeRuleMove move -> changeRule(move.card());
+                case PutOnTableMove move -> putOnTable(move.card());
+                case ChangeRuleAndPutOnTableMove move -> both(move);
+                case null, default -> throw new IllegalStateException();
             }
 
-            //check if the current player is winning
-            if (getWinner() != currentPlayer) {
-                passedPlayers.add(currentPlayer);
+            // check if the current player is winning, i.e. if the move was legitimate,
+            // otherwise they have to pass
+            if (getWinner() != currentPlayer && !passedPlayers.contains(currentPlayer)) {
+                IO.println(currentPlayer.getName() + " is not winning the game, they have to pass");
+                pass();
             }
         }
 
@@ -108,6 +77,27 @@ class Game implements GameState {
                 .filter(not(passedPlayers::contains))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No player left to win the game"));
+    }
+
+    private void both(ChangeRuleAndPutOnTableMove move) {
+        IO.println(currentPlayer.getName() + " has changed the rule to " + move.changeRuleCard().color().getRule().getName() + " and put " + move.tableCard() + " on the table");
+        rules.add(move.changeRuleCard());
+        currentPlayer.putOnTable(move.tableCard());
+    }
+
+    private void putOnTable(Card move) {
+        IO.println(currentPlayer.getName() + " has put " + move + " on the table");
+        currentPlayer.putOnTable(move);
+    }
+
+    private void changeRule(Card move) {
+        IO.println(currentPlayer.getName() + " has changed the rule to " + move.color().getRule().getName());
+        rules.add(move);
+    }
+
+    private void pass() {
+        IO.println(currentPlayer.getName() + " has passed");
+        passedPlayers.add(currentPlayer);
     }
 
     Player getWinner() {
@@ -130,18 +120,21 @@ class Game implements GameState {
         return getCurrentRule().getCardsForRule(player.getTable());
     }
 
-    Set<Card> getRemainingCards(Player winner) {
-        var losersCards = players.stream()
-                .filter(not(p -> p.equals(winner)))
+    Set<Card> getRemainingCards(Set<Card> wonCards) {
+        var tableCards = players.stream()
                 .flatMap(p -> p.getTable().stream())
                 .collect(toSet());
 
-        var winnerCards = getCardsForRule(winner);
-        var winnerRemainingCards = winner.getTable().stream()
-                .filter(not(winnerCards::contains))
+        var remainTableCards = tableCards.stream()
+                .filter(not(wonCards::contains))
                 .collect(toSet());
 
-        return concat(losersCards.stream(), winnerRemainingCards.stream())
+        var allHandsCards = players.stream()
+                .flatMap(p -> p.getHand().stream())
+                .collect(toSet());
+
+        return Stream.of(remainTableCards, allHandsCards)
+                .flatMap(Set::stream)
                 .collect(toSet());
     }
 }

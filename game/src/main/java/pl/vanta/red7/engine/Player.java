@@ -58,8 +58,15 @@ public final class Player implements PlayerView {
         return Set.copyOf(table);
     }
 
+    public Set<Card> getHand() {
+        return Set.copyOf(hand);
+    }
+
     Move play(GameState gameState) {
-        return new PassMove();
+        return hand.stream()
+                .max(Card::compareTo)
+                .map(card -> (Move) new PutOnTableMove(card))
+                .orElseGet(PassMove::new);
     }
 
     @Override
