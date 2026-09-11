@@ -16,6 +16,9 @@ public final class Player implements PlayerView {
     }
 
     void init(Set<Card> hand, Card initialCard) {
+        assert hand.size() == Game.CARDS_PER_PLAYER - 1 : "Player " + name + " should be dealt " + (Game.CARDS_PER_PLAYER - 1) + " cards, but got " + hand.size();
+        assert !hand.contains(initialCard) : "Player " + name + " should not have initial card " + initialCard + " in hand";
+        
         this.hand.clear();
         this.table.clear();
 
