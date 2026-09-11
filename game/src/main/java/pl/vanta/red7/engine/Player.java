@@ -58,8 +58,8 @@ public final class Player implements PlayerView {
         return Set.copyOf(table);
     }
 
-    void play(GameState gameState) {
-        gameState.pass(this);
+    Move play(GameState gameState) {
+        return new PassMove();
     }
 
     @Override

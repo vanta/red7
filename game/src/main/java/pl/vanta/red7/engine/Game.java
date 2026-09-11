@@ -43,32 +43,27 @@ class Game implements GameState {
         return List.copyOf(players);
     }
 
-    @Override
-    public void changeRule(Player player, Card cardRule) {
-        checkTurn(player);
-
-        rules.add(cardRule);
-    }
-
-    @Override
-    public void changeRuleAndPutCardOnTable(Player player, Card cardRule, Card cardOnTable) {
-        checkTurn(player);
-
-        rules.add(cardRule);
-        player.putOnTable(cardOnTable);
-    }
-
-    @Override
-    public void putCardOnTable(Player player, Card cardOnTable) {
-        checkTurn(player);
-
-        player.putOnTable(cardOnTable);
-    }
-
-    @Override
-    public void pass(Player player) {
-        passedPlayers.add(player);
-    }
+//    @Override
+//    public void changeRule(Player player, Card cardRule) {
+//        checkTurn(player);
+//
+//        rules.add(cardRule);
+//    }
+//
+//    @Override
+//    public void changeRuleAndPutCardOnTable(Player player, Card cardRule, Card cardOnTable) {
+//        checkTurn(player);
+//
+//        rules.add(cardRule);
+//        player.putOnTable(cardOnTable);
+//    }
+//
+//    @Override
+//    public void putCardOnTable(Player player, Card cardOnTable) {
+//        checkTurn(player);
+//
+//        player.putOnTable(cardOnTable);
+//    }
 
     private void checkTurn(Player player) {
         if (player != currentPlayer) {
@@ -90,11 +85,17 @@ class Game implements GameState {
                 continue;
             }
 
-            currentPlayer.play(this);
-
-            //if the current player passed, stop
-            if (passedPlayers.contains(currentPlayer)) {
-                continue;
+            switch (currentPlayer.play(this)) {
+                case PassMove _ -> passedPlayers.add(currentPlayer);
+                case ChangeRuleMove changeRuleMove -> rules.add(changeRuleMove.changeRuleCard());
+                case PutOnTableMove putOnTableMove -> currentPlayer.putOnTable(putOnTableMove.tableCard());
+                case ChangeRuleAndPutOnTableMove changeRuleAndPutCardOnTableMove -> {
+                    rules.add(changeRuleAndPutCardOnTableMove.changeRuleCard());
+                    currentPlayer.putOnTable(changeRuleAndPutCardOnTableMove.tableCard());
+                }
+                case null, default -> {
+                    throw new IllegalStateException();
+                }
             }
 
             //check if the current player is winning
