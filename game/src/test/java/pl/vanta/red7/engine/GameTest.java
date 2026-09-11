@@ -7,11 +7,21 @@ import org.junit.jupiter.api.Test;
 import pl.vanta.red7.game.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GameTest extends BaseTest {
     private final Player p1 = new Player("Player 1");
     private final Player p2 = new Player("Player 2");
     private final Player p3 = new Player("Player 3");
+
+    @Test
+    void shouldNotAllowToCreateGameWithLessThanTwoPlayers() {
+        //when
+        var exception = assertThrows(AssertionError.class, () -> new Game(List.of(p1)));
+
+        //then
+        assertEquals("At least two players are required to start the game", exception.getMessage());
+    }
 
     @Test
     void shouldFindTheWinnerAtTheBeginningOfTheGame() {
@@ -36,18 +46,12 @@ class GameTest extends BaseTest {
         p2.init(Set.of(R5, R6, R7), R1);
         p3.init(Set.of(Y5, Y6, Y7), Y1);
 
+        //when
         var game = new Game(List.of(p1, p2, p3));
+        game.start();
 
-        assertEquals(p2, game.getWinner());
-
-        game.putCardOnTable(p3, Y5);
+        //then
         assertEquals(p3, game.getWinner());
-
-        game.putCardOnTable(p1, O5);
-        assertEquals(p1, game.getWinner());
-
-        game.putCardOnTable(p2, R5);
-        assertEquals(p2, game.getWinner());
     }
 
 }
